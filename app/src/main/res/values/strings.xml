@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CryptoDemo</string>
+    <string name="demo_activity_button_text_order">order</string>
+    <string name="demo_activity_button_text_load">load</string>
 </resources>
