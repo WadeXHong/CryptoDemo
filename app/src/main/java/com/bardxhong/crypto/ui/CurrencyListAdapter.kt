@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.bardxhong.crypto.data.CurrencyInfo
 import com.bardxhong.crypto.databinding.ItemCurrencyInfoBinding
+import com.bardxhong.crypto.domain.viewEntity.CurrencyInfoViewEntity
 
 class CurrencyListAdapter : RecyclerView.Adapter<CurrencyListAdapter.CurrencyInfoViewHolder>() {
 
@@ -13,11 +13,11 @@ class CurrencyListAdapter : RecyclerView.Adapter<CurrencyListAdapter.CurrencyInf
     // 1. setter function for updating contents in list.
     // 2. use real data.
     // 2. use diffutils.
-    private val dataList: List<CurrencyInfo> by lazy {
+    private val dataList: List<CurrencyInfoViewEntity> by lazy {
         mutableListOf(
-            CurrencyInfo("BTC", "Bitcoin", "BTC"),
-            CurrencyInfo("ETH", "Ethereum", "ETH"),
-            CurrencyInfo("XRP", "XRP", "XRP"),
+            CurrencyInfoViewEntity("BTC", "Bitcoin", "BTC"),
+            CurrencyInfoViewEntity("ETH", "Ethereum", "ETH"),
+            CurrencyInfoViewEntity("XRP", "XRP", "XRP"),
         )
     }
 
