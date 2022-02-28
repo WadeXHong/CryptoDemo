@@ -1,10 +1,11 @@
-package com.bardxhong.crypto
+package com.bardxhong.crypto.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bardxhong.crypto.databinding.CurrencyListFragmentBinding
 
 class CurrencyListFragment : Fragment() {
@@ -21,6 +22,16 @@ class CurrencyListFragment : Fragment() {
             _binding = it
             it.root
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setRecyclerView()
+    }
+
+    private fun setRecyclerView() {
+        binding.recycler.adapter = CurrencyListAdapter()
+        binding.recycler.layoutManager = LinearLayoutManager(context)
     }
 
     override fun onDestroyView() {

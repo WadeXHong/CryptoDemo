@@ -1,4 +1,4 @@
-package com.bardxhong.crypto
+package com.bardxhong.crypto.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

@@ -6,6 +6,6 @@
     app:startDestination="@id/currencyListFragment">
     <fragment
         android:id="@+id/currencyListFragment"
-        android:name="com.bardxhong.crypto.CurrencyListFragment"
+        android:name="com.bardxhong.crypto.ui.CurrencyListFragment"
         tools:layout="@layout/currency_list_fragment" />
 </navigation>
