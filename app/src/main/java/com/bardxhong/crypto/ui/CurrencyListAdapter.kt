@@ -9,17 +9,7 @@ import com.bardxhong.crypto.domain.view_entities.CurrencyInfoViewEntity
 
 class CurrencyListAdapter : RecyclerView.Adapter<CurrencyListAdapter.CurrencyInfoViewHolder>() {
 
-    // TODO
-    // 1. setter function for updating contents in list.
-    // 2. use real data.
-    // 2. use diffutils.
-    private val dataList: MutableList<CurrencyInfoViewEntity> by lazy {
-        mutableListOf(
-            CurrencyInfoViewEntity("BTC", "Bitcoin", "BTC"),
-            CurrencyInfoViewEntity("ETH", "Ethereum", "ETH"),
-            CurrencyInfoViewEntity("XRP", "XRP", "XRP"),
-        ).also { notifyDataSetChanged() }
-    }
+    private val dataList: MutableList<CurrencyInfoViewEntity> = mutableListOf()
 
     fun updateList(list: List<CurrencyInfoViewEntity>) {
         dataList.clear()

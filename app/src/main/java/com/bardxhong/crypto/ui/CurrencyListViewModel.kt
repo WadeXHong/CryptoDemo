@@ -8,13 +8,15 @@ import com.bardxhong.crypto.domain.use_cases.SwitchOrderUseCase
 import com.bardxhong.crypto.domain.view_entities.CurrencyInfoViewEntity
 import com.bardxhong.crypto.shared.Order
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CurrencyListViewModel(
     private val getAllCurrencyInfoUseCase: GetAllCurrencyInfoUseCase = GetAllCurrencyInfoUseCase(),
@@ -28,44 +30,56 @@ class CurrencyListViewModel(
     private val _orderStateFlow = MutableStateFlow<Order>(Order.UNSPECIFIED)
     val orderStateFlow: StateFlow<Order> = _orderStateFlow
 
-    private val updateAction: suspend (entities: List<CurrencyInfoViewEntity>) -> Unit = {
-        _viewEntityStateFlow.value = it
-    }
-
-    fun getAllCurrency() {
-        // TODO debounce
-        // TODO loading progress
-        viewModelScope.launch(Dispatchers.IO) {
-            getAllCurrencyUseCase(orderStateFlow.value)
-        }
-    }
-
-    private suspend fun getAllCurrencyUseCase(order: Order) = withContext(Dispatchers.IO) {
-        getAllCurrencyInfoUseCase()
-            .flatMapConcat {
-                sortByOrderUseCase(it, order)
-            }
-            .collect(updateAction)
-    }
-
-    fun changeOrderAndGetAllCurrency() {
-        _orderStateFlow.value = switchOrderUseCase(orderStateFlow.value)
-        getAllCurrency()
-    }
-
     private val isInitialState
         get() = viewEntityStateFlow.value.isEmpty() && orderStateFlow.value == Order.UNSPECIFIED
 
-    init {
-        viewModelScope.launch {
-            orderStateFlow.collectLatest { order ->
-                val viewEntities = viewEntityStateFlow.value
-                when {
-                    isInitialState -> Unit
-                    viewEntities.isEmpty() -> getAllCurrencyInfoUseCase()
-                    else -> sortByOrderUseCase(viewEntities, order).collect(updateAction)
-                }
-            }
+    private var loadingDataJob: Job? = null
+
+    private fun updateEntityAction(entities: List<CurrencyInfoViewEntity>) {
+        _viewEntityStateFlow.value = entities
+    }
+
+    private fun updateOrderAction(order: Order) {
+        _orderStateFlow.value = order
+    }
+
+    fun getAllCurrency() {
+        loadingDataJob?.cancel()
+        loadingDataJob = viewModelScope.launch(Dispatchers.IO) {
+            getAllCurrencyUseCase(orderStateFlow.value).collect()
         }
     }
+
+    fun changeOrderAndGetAllCurrency() {
+        loadingDataJob?.cancel()
+        loadingDataJob = viewModelScope.launch {
+            switchOrderFlow(orderStateFlow.value)
+                .flatMapConcat { order ->
+                    val viewEntities = viewEntityStateFlow.value
+                    when {
+                        isInitialState -> emptyFlow()
+                        viewEntities.isEmpty() -> getAllCurrencyUseCase(order)
+                        else -> sortByOrderFlow(viewEntities, order)
+                    }
+                }
+                .collect()
+        }
+    }
+
+    private suspend fun getAllCurrencyUseCase(order: Order): Flow<List<CurrencyInfoViewEntity>> =
+        getAllCurrencyInfoUseCase()
+            .flatMapConcat {
+                sortByOrderFlow(it, order)
+            }
+
+    private suspend fun sortByOrderFlow(
+        entities: List<CurrencyInfoViewEntity>,
+        order: Order
+    ): Flow<List<CurrencyInfoViewEntity>> =
+        sortByOrderUseCase(entities, order).onEach(::updateEntityAction)
+
+
+    private fun switchOrderFlow(order: Order): Flow<Order> =
+        switchOrderUseCase(order).onEach(::updateOrderAction)
+
 }
