@@ -1,6 +1,6 @@
 package com.bardxhong.crypto.shared
 
-import com.bardxhong.crypto.CryptoApplication
+import android.app.Application
 import com.bardxhong.crypto.R
 import com.bardxhong.crypto.data.remote.NetworkInfo
 import okhttp3.Interceptor
@@ -9,7 +9,7 @@ import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 import okio.IOException
 
-class FakeResponseInterceptor : Interceptor {
+class FakeResponseInterceptor(private val context: Application) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
@@ -30,7 +30,7 @@ class FakeResponseInterceptor : Interceptor {
     }
 
     private fun fakeCurrencyListInfo(): String =
-        CryptoApplication.appContext.resources
+        context.resources
             .openRawResource(R.raw.currency_list_info)
             .bufferedReader()
             .use { it.readText() }

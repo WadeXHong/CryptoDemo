@@ -8,8 +8,10 @@ import androidx.lifecycle.lifecycleScope
 import com.bardxhong.crypto.R
 import com.bardxhong.crypto.databinding.ActivityDemoBinding
 import com.bardxhong.crypto.shared.Order
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
+@AndroidEntryPoint
 class DemoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDemoBinding
     private val currencyViewModel by viewModels<CurrencyListViewModel>()

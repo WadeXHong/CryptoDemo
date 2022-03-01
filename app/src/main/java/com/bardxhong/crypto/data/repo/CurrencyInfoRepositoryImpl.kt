@@ -6,15 +6,14 @@ import com.bardxhong.crypto.data.remote.toResult
 import com.bardxhong.crypto.data.room.CurrencyInfoDatabase
 import com.bardxhong.crypto.data.room.CurrencyInfoRoomEntity
 import com.bardxhong.crypto.domain.repo.ICurrencyInfoRepository
-import com.bardxhong.crypto.shared.RetrofitProvider
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 
-class CurrencyInfoRepositoryImpl(
-    // TODO inject by hilt
-    private val service: CurrencyService = RetrofitProvider.service,
-    private val roomDatabase: CurrencyInfoDatabase = CurrencyInfoDatabase.getInstance()
+class CurrencyInfoRepositoryImpl @Inject constructor(
+    private val service: CurrencyService,
+    private val roomDatabase: CurrencyInfoDatabase
 ) : ICurrencyInfoRepository {
     override suspend fun getAllCurrencyInfo(): Result<List<CurrencyInfoRoomEntity>> =
         withContext(Dispatchers.IO) {

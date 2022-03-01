@@ -7,6 +7,8 @@ import com.bardxhong.crypto.domain.use_cases.SortByOrderUseCase
 import com.bardxhong.crypto.domain.use_cases.SwitchOrderUseCase
 import com.bardxhong.crypto.domain.view_entities.CurrencyInfoViewEntity
 import com.bardxhong.crypto.shared.Order
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -18,10 +20,11 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class CurrencyListViewModel(
-    private val getAllCurrencyInfoUseCase: GetAllCurrencyInfoUseCase = GetAllCurrencyInfoUseCase(),
-    private val switchOrderUseCase: SwitchOrderUseCase = SwitchOrderUseCase(),
-    private val sortByOrderUseCase: SortByOrderUseCase = SortByOrderUseCase()
+@HiltViewModel
+class CurrencyListViewModel @Inject constructor(
+    private val getAllCurrencyInfoUseCase: GetAllCurrencyInfoUseCase,
+    private val switchOrderUseCase: SwitchOrderUseCase,
+    private val sortByOrderUseCase: SortByOrderUseCase
 ) : ViewModel() {
 
     private val _viewEntityStateFlow = MutableStateFlow<List<CurrencyInfoViewEntity>>(emptyList())

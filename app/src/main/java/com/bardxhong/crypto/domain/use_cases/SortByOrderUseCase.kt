@@ -2,12 +2,13 @@ package com.bardxhong.crypto.domain.use_cases
 
 import com.bardxhong.crypto.domain.view_entities.CurrencyInfoViewEntity
 import com.bardxhong.crypto.shared.Order
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-class SortByOrderUseCase {
+class SortByOrderUseCase @Inject constructor() {
     suspend operator fun invoke(
         list: List<CurrencyInfoViewEntity>,
         order: Order
