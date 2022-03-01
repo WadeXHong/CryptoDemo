@@ -13,12 +13,19 @@ class CurrencyListAdapter : RecyclerView.Adapter<CurrencyListAdapter.CurrencyInf
     // 1. setter function for updating contents in list.
     // 2. use real data.
     // 2. use diffutils.
-    private val dataList: List<CurrencyInfoViewEntity> by lazy {
+    private val dataList: MutableList<CurrencyInfoViewEntity> by lazy {
         mutableListOf(
             CurrencyInfoViewEntity("BTC", "Bitcoin", "BTC"),
             CurrencyInfoViewEntity("ETH", "Ethereum", "ETH"),
             CurrencyInfoViewEntity("XRP", "XRP", "XRP"),
-        )
+        ).also { notifyDataSetChanged() }
+    }
+
+    fun updateList(list: List<CurrencyInfoViewEntity>) {
+        dataList.clear()
+        dataList.addAll(list.toList())
+        // TODO use Diffutils to improve efficiency
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyInfoViewHolder {
