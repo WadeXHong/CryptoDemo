@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bardxhong.crypto.databinding.ItemCurrencyInfoBinding
-import com.bardxhong.crypto.domain.viewEntity.CurrencyInfoViewEntity
+import com.bardxhong.crypto.domain.view_entities.CurrencyInfoViewEntity
 
 class CurrencyListAdapter : RecyclerView.Adapter<CurrencyListAdapter.CurrencyInfoViewHolder>() {
 

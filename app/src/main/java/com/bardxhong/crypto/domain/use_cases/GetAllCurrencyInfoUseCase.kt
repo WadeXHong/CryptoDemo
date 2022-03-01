@@ -1,7 +1,7 @@
 package com.bardxhong.crypto.domain.use_cases
 
 import com.bardxhong.crypto.domain.repo.ICurrencyInfoRepository
-import com.bardxhong.crypto.domain.viewEntity.CurrencyInfoViewEntity
+import com.bardxhong.crypto.domain.view_entities.CurrencyInfoViewEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

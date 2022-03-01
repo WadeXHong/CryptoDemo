@@ -1,4 +1,4 @@
-package com.bardxhong.crypto.domain.viewEntity
+package com.bardxhong.crypto.domain.view_entities
 
 import com.bardxhong.crypto.data.room.CurrencyInfoRoomEntity
 
