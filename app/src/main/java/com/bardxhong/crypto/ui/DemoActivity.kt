@@ -3,7 +3,12 @@ package com.bardxhong.crypto.ui
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import com.bardxhong.crypto.R
 import com.bardxhong.crypto.databinding.ActivityDemoBinding
+import com.bardxhong.crypto.shared.Order
+import kotlinx.coroutines.flow.collectLatest
 
 class DemoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDemoBinding
@@ -14,8 +19,43 @@ class DemoActivity : AppCompatActivity() {
         binding = ActivityDemoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setOnClickListenerForLoadingTextView()
+        setOnClickListenerForOrderTextView()
+        collectOderStateFlow()
+    }
+
+    private fun setOnClickListenerForOrderTextView() {
+        binding.tvOrder.setOnClickListener {
+            currencyViewModel.changeOrderAndGetAllCurrency()
+        }
+    }
+
+    private fun setOnClickListenerForLoadingTextView() {
         binding.tvLoad.setOnClickListener {
-            currencyViewModel.getAllCurrencyInfoUseCase()
+            currencyViewModel.getAllCurrency()
+        }
+    }
+
+    private fun collectOderStateFlow() {
+        lifecycleScope.launchWhenStarted {
+            currencyViewModel.orderStateFlow.collectLatest { order ->
+                binding.tvOrder.setCompoundDrawablesWithIntrinsicBounds(
+                    null,
+                    null,
+                    when (order) {
+                        Order.UNSPECIFIED -> null
+                        Order.ASCENDING -> ContextCompat.getDrawable(
+                            this@DemoActivity,
+                            R.drawable.ic_baseline_arrow_ascending_24
+                        )
+                        Order.DESCENDING -> ContextCompat.getDrawable(
+                            this@DemoActivity,
+                            R.drawable.ic_baseline_arrow_descending_24
+                        )
+                    },
+                    null
+                )
+            }
         }
     }
 }

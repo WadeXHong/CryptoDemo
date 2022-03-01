@@ -17,7 +17,7 @@
         android:id="@+id/tv_order"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/demo_activity_button_text_order"
+        android:text="@string/demo_activity_button_text_sort"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_load"
         app:layout_constraintEnd_toEndOf="parent"
