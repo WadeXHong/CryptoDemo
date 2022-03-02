@@ -55,14 +55,21 @@ class CurrencyListViewModel @Inject constructor(
 
     fun changeOrderAndGetAllCurrency() {
         loadingDataJob?.cancel()
-        loadingDataJob = viewModelScope.launch {
+        loadingDataJob = viewModelScope.launch(Dispatchers.IO) {
             switchOrderFlow(orderStateFlow.value)
                 .flatMapConcat { order ->
                     val viewEntities = viewEntityStateFlow.value
-                    when {
-                        isInitialState -> emptyFlow()
-                        viewEntities.isEmpty() -> getAllCurrencyUseCase(order)
-                        else -> sortByOrderFlow(viewEntities, order)
+                    val nextActionType = judgeOrderAction(viewEntities)
+
+                    when (nextActionType) {
+                        ChangeOrderAction.SkipWhenInitial ->
+                            emptyFlow()
+
+                        ChangeOrderAction.GetNewInfoListThenSortByOrder ->
+                            getAllCurrencyUseCase(order)
+
+                        ChangeOrderAction.SortByNewOrderWithOldInfoList ->
+                            sortByOrderFlow(viewEntities, order)
                     }
                 }
                 .collect()
@@ -85,4 +92,17 @@ class CurrencyListViewModel @Inject constructor(
     private fun switchOrderFlow(order: Order): Flow<Order> =
         switchOrderUseCase(order).onEach(::updateOrderAction)
 
+    private fun judgeOrderAction(viewEntities: List<CurrencyInfoViewEntity>): ChangeOrderAction {
+        return when {
+            isInitialState -> ChangeOrderAction.SkipWhenInitial
+            viewEntities.isEmpty() -> ChangeOrderAction.GetNewInfoListThenSortByOrder
+            else -> ChangeOrderAction.SortByNewOrderWithOldInfoList
+        }
+    }
+}
+
+private sealed class ChangeOrderAction {
+    object SkipWhenInitial : ChangeOrderAction()
+    object GetNewInfoListThenSortByOrder : ChangeOrderAction()
+    object SortByNewOrderWithOldInfoList : ChangeOrderAction()
 }
